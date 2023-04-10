@@ -44,3 +44,7 @@ button{
     margin-left: 5px;
     cursor: pointer;
 }
+.list {
+    list-style: none;
+  }
+  
