@@ -4,7 +4,8 @@ const btnSubmit = document.getElementById("add-btn");
 const inputTodo = document.getElementById("input");
 const formTodo = document.getElementById("add-list");
 const todoList = document.querySelector(".list");
-const btnDeleteAll = document.getElementById("delete-all");
+const taskCounter = document.querySelector(".task-counter");
+const completedCounter = document.querySelector(".completed-counter");
 // 1 ADD FORM EVENT LISTENER
 formTodo.addEventListener("submit", (e) => handleSubmit(e));
 // 2 HANDLE SUBMIT FN
@@ -24,6 +25,7 @@ const handleSubmit = (e) => {
     appendTodoItem(newTodo);
     // RESET INPUT VALUE
     inputTodo.value = "";
+    updateCounters(todos);
 };
 // 6 APPEND TODOS TO DOM
 window.addEventListener("DOMContentLoaded", () => {
@@ -44,6 +46,7 @@ const appendTodoItem = (todo) => {
         const index = todos.findIndex((t) => t.id === todo.id);
         todos[index] = todo;
         localStorage.setItem('todos', JSON.stringify(todos));
+        updateCounters(todos);
     };
     const editBtn = document.createElement("button");
     editBtn.textContent = "Edit";
@@ -55,22 +58,25 @@ const appendTodoItem = (todo) => {
             const index = todos.findIndex((t) => t.id === todo.id);
             todos[index] = todo;
             localStorage.setItem('todos', JSON.stringify(todos));
-            newLi.childNodes[1].textContent = newTodo;
+            newLi.childNodes[0].textContent = newTodo;
         }
     };
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.onclick = () => {
+        const todos = JSON.parse(localStorage.getItem('todos') || '[]');
         deleteTodoItem(todo);
         todoList.removeChild(newLi);
+        updateCounters(todos);
     };
     newLi.append(todo.todo, checkbox, editBtn, deleteBtn);
     todoList === null || todoList === void 0 ? void 0 : todoList.prepend(newLi);
 };
-// 7 DELETE ALL TODOS
-const clearTodos = () => {
-    localStorage.setItem('todos', JSON.stringify([]));
-    todoList.innerHTML = "";
+const updateCounters = (todos) => {
+    const taskCount = todos.length;
+    const completedCount = todos.filter((todo) => todo.completed).length;
+    taskCounter.textContent = `${taskCount} task${taskCount !== 1 ? 's' : ''}`;
+    completedCounter.textContent = `${completedCount} completed`;
 };
 // Deletes a specific todo item from the list
 const deleteTodoItem = (todo) => {

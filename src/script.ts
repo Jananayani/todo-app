@@ -3,7 +3,8 @@ const btnSubmit = document.getElementById("add-btn") as HTMLButtonElement;
 const inputTodo = document.getElementById("input") as HTMLInputElement;
 const formTodo = document.getElementById("add-list") as HTMLFormElement;
 const todoList = document.querySelector(".list") as HTMLUListElement;
-const btnDeleteAll = document.getElementById("delete-all") as HTMLButtonElement;
+const taskCounter = document.querySelector(".task-counter") as HTMLSpanElement;
+const completedCounter = document.querySelector(".completed-counter") as HTMLSpanElement;
 
 // NewTodo interface
 interface NewTodo {
@@ -32,12 +33,14 @@ const handleSubmit = (e: Event) => {
   appendTodoItem(newTodo);
   // RESET INPUT VALUE
   inputTodo.value = "";
+  updateCounters(todos);
 };
 
 // 6 APPEND TODOS TO DOM
 window.addEventListener("DOMContentLoaded", () => {
   const todos = JSON.parse(localStorage.getItem('todos') || '[]');
   todos.forEach((todo: NewTodo) => appendTodoItem(todo));
+  
 });
 
 // 3 APPEND TODO FN
@@ -55,6 +58,7 @@ const appendTodoItem = (todo: NewTodo) => {
     const index = todos.findIndex((t: NewTodo) => t.id === todo.id);
     todos[index] = todo;
     localStorage.setItem('todos', JSON.stringify(todos));
+    updateCounters(todos);
   };
 
   const editBtn = document.createElement("button");
@@ -67,26 +71,31 @@ const appendTodoItem = (todo: NewTodo) => {
       const index = todos.findIndex((t: NewTodo) => t.id === todo.id);
       todos[index] = todo;
       localStorage.setItem('todos', JSON.stringify(todos));
-      newLi.childNodes[1].textContent = newTodo;
+      newLi.childNodes[0].textContent = newTodo;
     }
   };
 
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Delete";
-  deleteBtn.onclick = () => {
-    deleteTodoItem(todo);
-    todoList.removeChild(newLi);
-  };
+const deleteBtn = document.createElement("button");
+deleteBtn.textContent = "Delete";
+deleteBtn.onclick = () => {
+  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+  deleteTodoItem(todo);
+  todoList.removeChild(newLi);
+  updateCounters(todos);
+};
 
   newLi.append(todo.todo, checkbox, editBtn, deleteBtn);
   todoList?.prepend(newLi);
 };
-
-// 7 DELETE ALL TODOS
-const clearTodos = () => {
-  localStorage.setItem('todos', JSON.stringify([]));
-  todoList.innerHTML = "";
+const updateCounters = (todos: NewTodo[]) => {
+  const taskCount = todos.length;
+  const completedCount = todos.filter((todo: NewTodo) => todo.completed).length;
+  taskCounter.textContent = `${taskCount} task${taskCount !== 1 ? 's' : ''}`;
+  completedCounter.textContent = `${completedCount} completed`;
 };
+
+
+
 
 // Deletes a specific todo item from the list
 const deleteTodoItem = (todo: NewTodo) => {
@@ -94,4 +103,5 @@ const deleteTodoItem = (todo: NewTodo) => {
   const index = todos.findIndex((t: NewTodo) => t.id === todo.id);
   todos.splice(index, 1);
   localStorage.setItem('todos', JSON.stringify(todos));
-};
+}
+  
