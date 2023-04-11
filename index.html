@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Jambanis App</title>
+    <title>Todo App</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
     <link
       rel="stylesheet"
@@ -9,50 +9,53 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./dist/main.css">
+    <link rel="stylesheet" href="./dist/main.css" />
     <script src="./dist/script.js" defer></script>
-
   </head>
   <body>
-    <div class="app-container d-flex align-items-center justify-content-center flex-column">
+    <div
+      class="app-container d-flex align-items-center justify-content-center flex-column"
+    >
+      <h3>Todo App</h3>
 
-      <h3>Todo List</h3>
-      <!-- <div class="d-flex align-items-center mb-3">
-        <div class="form-group mr-3 mb-0">
-          <input type="text" class="form-control" id="input" placeholder="Enter a task here"/>
+      <div class="d-flex align-items-center mb-3">
+        <form id="add-list" class="d-flex align-items-center mb-3">
+          <div class="form-group mr-3 mb-0">
+            <input
+              id="input"
+              class="form-control"
+              autofocus
+              required
+              placeholder="New todo"
+              type="text"
+              maxlength="30"
+            />
+          </div>
+          <button type="submit" id="add-btn" class="btn btn-success">
+            Add
+          </button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="table table-hover table-bordered">
+            <thead class="thead-dark">
+              <ul class="list">
+                <span class="task-counter"></span
+                ><br />
+                <span class="completed-counter"></span>
+                <tr>
+                  <th>Task Name</th>
+                  <th>Completed or Not</th>
+                  <th>Edit Task</th>
+                  <th>Delete Task</th>
+                </tr>
+              </ul>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
-        <button type="submit" id="add-btn" class="btn btn-primary mr-3"> Save </button>
-      </div> -->
-    <div class="d-flex align-items-center mb-3">
-      <form id="add-list" class="d-flex align-items-center mb-3">
-        <div class="form-group mr-3 mb-0">
-          <input id="input" class="form-control" autofocus required placeholder="New todo" type="text" maxlength="30" >
-        </div>
-        <button type="submit" id="add-btn" class="btn btn-success">Add</button>
-      </form>
-    </div>
-      
-      <div class="table-wrapper">
-        <table class="table table-hover table-bordered">
-          <thead>
-            <ul class="list">
-              
-              <span class="task-counter"></span><br>
-              <span class="completed-counter"></span> 
-              <tr>
-                <th>Task Name</th>
-                <th>Completed or Not</th>
-                <th>Edit Task</th>
-                <th>Delete Task</th>
-              </tr>  
-            </ul>
-          </thead>
-          <tbody>
-            
-          </tbody>
-        </table>
       </div>
     </div>
-
   </body>
 </html>

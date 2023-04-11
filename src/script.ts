@@ -1,11 +1,12 @@
 // Select elements
-const btnSubmit = document.getElementById("add-btn") as HTMLButtonElement;
-const inputTodo = document.getElementById("input") as HTMLInputElement;
-const formTodo = document.getElementById("add-list") as HTMLFormElement;
-const todoTable = document.querySelector(".table") as HTMLTableElement;
-const taskCounter = document.querySelector(".task-counter") as HTMLSpanElement;
-const completedCounter = document.querySelector(".completed-counter") as HTMLSpanElement;
 
+const taskName = document.getElementById("input") as HTMLInputElement;
+const taskList = document.getElementById("add-list") as HTMLFormElement;
+const taskTable = document.querySelector(".table") as HTMLTableElement;
+const taskCounter = document.querySelector(".task-counter") as HTMLSpanElement;
+const completedCounter = document.querySelector(
+  ".completed-counter"
+) as HTMLSpanElement;
 
 // NewTodo interface
 interface NewTodo {
@@ -15,7 +16,7 @@ interface NewTodo {
 }
 
 // Add Form Event Listner
-formTodo.addEventListener("submit", (event) => handleSubmit(event));
+taskList.addEventListener("submit", (event) => handleSubmit(event));
 
 // Submit Function
 const handleSubmit = (event: Event) => {
@@ -23,33 +24,31 @@ const handleSubmit = (event: Event) => {
   // New object of todo
   const newTodo: NewTodo = {
     id: Date.now(),
-    todo: inputTodo.value,
+    todo: taskName.value,
     completed: false,
   };
   // Save todo to local storage
-  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+  const todos = JSON.parse(localStorage.getItem("todos") || "[]");
   todos.push(newTodo);
-  localStorage.setItem('todos', JSON.stringify(todos));
-  
-  appendTodoItem(newTodo);
+  localStorage.setItem("todos", JSON.stringify(todos));
+
+  appendTask(newTodo);
   // Reset the value of text box
-  inputTodo.value = "";
+  taskName.value = "";
   //get count of tasks
   updateCounters(todos);
 };
 
 // Append todos to DOM
 window.addEventListener("DOMContentLoaded", () => {
-  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-  todos.forEach((todo: NewTodo) => appendTodoItem(todo));
+  const todos = JSON.parse(localStorage.getItem("todos") || "[]");
+  todos.forEach((todo: NewTodo) => appendTask(todo));
   updateCounters(todos);
 });
 
-
-const appendTodoItem = (todonext: NewTodo) => {
- 
+const appendTask = (todonext: NewTodo) => {
   // Create new row
-  const newRow = todoTable.insertRow(-1);
+  const newRow = taskTable.insertRow(-1);
   newRow.id = `row-${todonext.id}`;
 
   // Create checkbox cell
@@ -58,13 +57,13 @@ const appendTodoItem = (todonext: NewTodo) => {
   checkbox.type = "checkbox";
   checkbox.checked = todonext.completed;
   checkboxCell.appendChild(checkbox);
-  
+
   checkbox.onchange = () => {
     todonext.completed = checkbox.checked;
-    const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+    const todos = JSON.parse(localStorage.getItem("todos") || "[]");
     const index = todos.findIndex((t: NewTodo) => t.id === todonext.id);
     todos[index] = todonext;
-    localStorage.setItem('todos', JSON.stringify(todos));
+    localStorage.setItem("todos", JSON.stringify(todos));
     //Get count of filled checkboxes
     updateCounters(todos);
   };
@@ -76,7 +75,7 @@ const appendTodoItem = (todonext: NewTodo) => {
   // Create edit button cell
   const editBtnCell = newRow.insertCell(2);
   const editBtn = document.createElement("button");
-  editBtn.type="edit"
+  editBtn.type = "edit";
   editBtn.textContent = "Edit";
   editBtn.className = "btn btn-primary edit-btn";
   editBtnCell.appendChild(editBtn);
@@ -85,10 +84,10 @@ const appendTodoItem = (todonext: NewTodo) => {
     const newTodo = prompt("Enter new todo text:", todonext.todo);
     if (newTodo) {
       todonext.todo = newTodo;
-      const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+      const todos = JSON.parse(localStorage.getItem("todos") || "[]");
       const index = todos.findIndex((t: NewTodo) => t.id === todonext.id);
       todos[index] = todonext;
-      localStorage.setItem('todos', JSON.stringify(todos));
+      localStorage.setItem("todos", JSON.stringify(todos));
       taskCell.textContent = newTodo;
     }
   };
@@ -101,33 +100,33 @@ const appendTodoItem = (todonext: NewTodo) => {
   deleteBtnCell.appendChild(deleteBtn);
 
   deleteBtn.onclick = () => {
-  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-  const index = todos.findIndex((t: NewTodo) => t.id === todonext.id);
-  todos.splice(index, 1);
-  localStorage.setItem('todos', JSON.stringify(todos));
-  todoTable.deleteRow(newRow.rowIndex);
-  //Get count of tasks
-  updateCounters(todos);
+    const confirmDelete = confirm("Are you sure you want to delete this todo?");
+
+    if (confirmDelete) {
+      const todos = JSON.parse(localStorage.getItem("todos") || "[]");
+      const index = todos.findIndex((t: NewTodo) => t.id === todonext.id);
+      todos.splice(index, 1);
+      localStorage.setItem("todos", JSON.stringify(todos));
+      taskTable.deleteRow(newRow.rowIndex);
+
+      //Get count of tasks
+      updateCounters(todos);
+    }
   };
-  };
+};
 
 //Function to update count
 const updateCounters = (todos: NewTodo[]) => {
   const taskCount = todos.length;
   const completedCount = todos.filter((todo: NewTodo) => todo.completed).length;
-  taskCounter.textContent = `${taskCount} task${taskCount !== 1 ? 's' : ''}`;
-  completedCounter.textContent = `${completedCount} completed`;
+  taskCounter.textContent = `${taskCount}  Task${taskCount !== 1 ? "s" : ""}`;
+  completedCounter.textContent = `${completedCount} Completed`;
 };
 
-
-
-
 // Deletes a specific todo item from the list
-const deleteTodoItem = (todo: NewTodo) => {
-  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+const deleteTask = (todo: NewTodo) => {
+  const todos = JSON.parse(localStorage.getItem("todos") || "[]");
   const index = todos.findIndex((t: NewTodo) => t.id === todo.id);
   todos.splice(index, 1);
-  localStorage.setItem('todos', JSON.stringify(todos));
-  
-}
-  
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
