@@ -10,7 +10,7 @@ const completedCounter = document.querySelector(".completed-counter");
 formTodo.addEventListener("submit", (event) => handleSubmit(event));
 // Submit Function
 const handleSubmit = (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     // New object of todo
     const newTodo = {
         id: Date.now(),
@@ -33,28 +33,28 @@ window.addEventListener("DOMContentLoaded", () => {
     todos.forEach((todo) => appendTodoItem(todo));
     updateCounters(todos);
 });
-const appendTodoItem = (todo) => {
+const appendTodoItem = (todonext) => {
     // Create new row
     const newRow = todoTable.insertRow(-1);
-    newRow.id = `row-${todo.id}`;
+    newRow.id = `row-${todonext.id}`;
     // Create checkbox cell
     const checkboxCell = newRow.insertCell(0);
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.checked = todo.completed;
+    checkbox.checked = todonext.completed;
     checkboxCell.appendChild(checkbox);
     checkbox.onchange = () => {
-        todo.completed = checkbox.checked;
+        todonext.completed = checkbox.checked;
         const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-        const index = todos.findIndex((t) => t.id === todo.id);
-        todos[index] = todo;
+        const index = todos.findIndex((t) => t.id === todonext.id);
+        todos[index] = todonext;
         localStorage.setItem('todos', JSON.stringify(todos));
         //Get count of filled checkboxes
         updateCounters(todos);
     };
     // Create task cell
     const taskCell = newRow.insertCell(0);
-    taskCell.textContent = todo.todo;
+    taskCell.textContent = todonext.todo;
     // Create edit button cell
     const editBtnCell = newRow.insertCell(2);
     const editBtn = document.createElement("button");
@@ -63,12 +63,12 @@ const appendTodoItem = (todo) => {
     editBtn.className = "btn btn-primary edit-btn";
     editBtnCell.appendChild(editBtn);
     editBtn.onclick = () => {
-        const newTodo = prompt("Enter new todo text:", todo.todo);
+        const newTodo = prompt("Enter new todo text:", todonext.todo);
         if (newTodo) {
-            todo.todo = newTodo;
+            todonext.todo = newTodo;
             const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-            const index = todos.findIndex((t) => t.id === todo.id);
-            todos[index] = todo;
+            const index = todos.findIndex((t) => t.id === todonext.id);
+            todos[index] = todonext;
             localStorage.setItem('todos', JSON.stringify(todos));
             taskCell.textContent = newTodo;
         }
@@ -81,7 +81,7 @@ const appendTodoItem = (todo) => {
     deleteBtnCell.appendChild(deleteBtn);
     deleteBtn.onclick = () => {
         const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-        const index = todos.findIndex((t) => t.id === todo.id);
+        const index = todos.findIndex((t) => t.id === todonext.id);
         todos.splice(index, 1);
         localStorage.setItem('todos', JSON.stringify(todos));
         todoTable.deleteRow(newRow.rowIndex);
