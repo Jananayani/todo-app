@@ -3,53 +3,65 @@
 const btnSubmit = document.getElementById("add-btn");
 const inputTodo = document.getElementById("input");
 const formTodo = document.getElementById("add-list");
-const todoList = document.querySelector(".list");
+const todoTable = document.querySelector(".table");
 const taskCounter = document.querySelector(".task-counter");
 const completedCounter = document.querySelector(".completed-counter");
-// 1 ADD FORM EVENT LISTENER
-formTodo.addEventListener("submit", (e) => handleSubmit(e));
-// 2 HANDLE SUBMIT FN
-const handleSubmit = (e) => {
-    e.preventDefault();
-    // NEW TODO OBJ
+// Add Form Event Listner
+formTodo.addEventListener("submit", (event) => handleSubmit(event));
+// Submit Function
+const handleSubmit = (event) => {
+    event.preventDefault();
+    // New object of todo
     const newTodo = {
         id: Date.now(),
         todo: inputTodo.value,
         completed: false,
     };
-    // SAVE TODO TO LOCAL STORAGE
+    // Save todo to local storage
     const todos = JSON.parse(localStorage.getItem('todos') || '[]');
     todos.push(newTodo);
     localStorage.setItem('todos', JSON.stringify(todos));
-    // APPEND TODO FN
     appendTodoItem(newTodo);
-    // RESET INPUT VALUE
+    // Reset the value of text box
     inputTodo.value = "";
+    //get count of tasks
     updateCounters(todos);
 };
-// 6 APPEND TODOS TO DOM
+// Append todos to DOM
 window.addEventListener("DOMContentLoaded", () => {
     const todos = JSON.parse(localStorage.getItem('todos') || '[]');
     todos.forEach((todo) => appendTodoItem(todo));
+    updateCounters(todos);
 });
-// 3 APPEND TODO FN
 const appendTodoItem = (todo) => {
-    // APPEND NEW TODO TO THE DOM
-    // Create new LI, Checkbox and Buttons
-    const newLi = document.createElement("li");
+    // Create new row
+    const newRow = todoTable.insertRow(-1);
+    newRow.id = `row-${todo.id}`;
+    // Create checkbox cell
+    const checkboxCell = newRow.insertCell(0);
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = todo.completed;
+    checkboxCell.appendChild(checkbox);
     checkbox.onchange = () => {
         todo.completed = checkbox.checked;
         const todos = JSON.parse(localStorage.getItem('todos') || '[]');
         const index = todos.findIndex((t) => t.id === todo.id);
         todos[index] = todo;
         localStorage.setItem('todos', JSON.stringify(todos));
+        //Get count of filled checkboxes
         updateCounters(todos);
     };
+    // Create task cell
+    const taskCell = newRow.insertCell(0);
+    taskCell.textContent = todo.todo;
+    // Create edit button cell
+    const editBtnCell = newRow.insertCell(2);
     const editBtn = document.createElement("button");
+    editBtn.type = "edit";
     editBtn.textContent = "Edit";
+    editBtn.className = "btn btn-primary edit-btn";
+    editBtnCell.appendChild(editBtn);
     editBtn.onclick = () => {
         const newTodo = prompt("Enter new todo text:", todo.todo);
         if (newTodo) {
@@ -58,20 +70,26 @@ const appendTodoItem = (todo) => {
             const index = todos.findIndex((t) => t.id === todo.id);
             todos[index] = todo;
             localStorage.setItem('todos', JSON.stringify(todos));
-            newLi.childNodes[0].textContent = newTodo;
+            taskCell.textContent = newTodo;
         }
     };
+    // Create delete button cell
+    const deleteBtnCell = newRow.insertCell(3);
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
+    deleteBtn.className = "btn btn-danger dlt-btn";
+    deleteBtnCell.appendChild(deleteBtn);
     deleteBtn.onclick = () => {
         const todos = JSON.parse(localStorage.getItem('todos') || '[]');
-        deleteTodoItem(todo);
-        todoList.removeChild(newLi);
+        const index = todos.findIndex((t) => t.id === todo.id);
+        todos.splice(index, 1);
+        localStorage.setItem('todos', JSON.stringify(todos));
+        todoTable.deleteRow(newRow.rowIndex);
+        //Get count of tasks
         updateCounters(todos);
     };
-    newLi.append(todo.todo, checkbox, editBtn, deleteBtn);
-    todoList === null || todoList === void 0 ? void 0 : todoList.prepend(newLi);
 };
+//Function to update count
 const updateCounters = (todos) => {
     const taskCount = todos.length;
     const completedCount = todos.filter((todo) => todo.completed).length;
